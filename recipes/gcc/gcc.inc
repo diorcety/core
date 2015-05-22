@@ -48,6 +48,7 @@ PROVIDES_${PN}[qa] += "allow-missing-provides:liblto-plugin"
 # Get rid of gcc-dev package
 PACKAGES = "${PN}-dbg ${PN}-doc ${PN}-locale ${PN}"
 FILES_${PN} += "${libdir}/*.a"
+FILES_${PN} += "${libdir}64/*.a"
 
 inherit auto-package-utils
 AUTO_PACKAGE_UTILS = "cpp g++ gcov"
