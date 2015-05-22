@@ -3,7 +3,7 @@
 ## See the autotools class. If using this class instead of autotools, one
 ## ensures that the autoreconf command is run before configure.
 
-inherit autotools
+inherit autotools automate
 
 CLASS_DEPENDS += "${DEPENDS_AUTORECONF}"
 DEPENDS_AUTORECONF ?= "native:glib-dev"
@@ -20,7 +20,7 @@ pkgltdldir:native    = "${STAGE_DIR}/native${stage_datadir}/libtool"
 pkgltdldir:cross     = "${STAGE_DIR}/native${stage_datadir}/libtool"
 pkgltdldir:sdk-cross = "${STAGE_DIR}/native${stage_datadir}/libtool"
 
-addtask autoreconf after fetch unpack patch stage siteinfo before configure
+addtask autoreconf after fetch unpack patch stage siteinfo automate before configure
 do_autoreconf[dirs] = "${S}"
 
 export LIBTOOLIZE = "${HOST_PREFIX}libtoolize"

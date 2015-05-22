@@ -1,0 +1,24 @@
+
+CLASS_DEPENDS += "${DEPENDS_AUTOCONF}"
+DEPENDS_AUTOCONF ?= "native:autoconf"
+
+addtask automate after fetch unpack patch stage siteinfo before configure
+do_automate[dirs] = "${B}"
+
+export autom4te_perllibdir = "${STAGE_DIR}/native${stage_datadir}/autoconf"
+export perllibdir = "${STAGE_DIR}/native${stage_datadir}/automake-1.14"
+export AUTOCONF = "${STAGE_DIR}/native${stage_bindir}/autoconf"
+export AUTOHEADER = "${STAGE_DIR}/native${stage_bindir}/autoheader"
+export AUTOM4TE = "${STAGE_DIR}/native${stage_bindir}/autom4te"
+export AUTOM4TE_CFG = "${STAGE_DIR}/native${stage_datadir}/autoconf/autom4te.cfg"
+
+do_automate() {
+    PP=`echo "${STAGE_DIR}/native" | sed -e 's/[]\/$*.^|[]/\\\\&/g'`
+    cat ${AUTOM4TE_CFG} | sed "s/include '/include '$PP/g" > ${AUTOM4TE_CFG}.new
+    rm -rf ${AUTOM4TE_CFG}
+    mv ${AUTOM4TE_CFG}.new ${AUTOM4TE_CFG}
+}
+
+# Local Variables:
+# mode: python
+# End:
