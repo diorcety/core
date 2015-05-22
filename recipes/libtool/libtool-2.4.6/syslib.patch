@@ -1,0 +1,66 @@
+diff -urN a/build-aux/ltmain.in b/build-aux/ltmain.in
+--- a/build-aux/ltmain.in	2015-02-06 13:57:56.000000000 +0100
++++ b/build-aux/ltmain.in	2016-01-17 14:01:37.803019373 +0100
+@@ -5716,9 +5716,9 @@
+ 	  func_stripname '-l' '' "$deplib"
+ 	  name=$func_stripname_result
+ 	  if test lib = "$linkmode"; then
+-	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs"
+ 	  else
+-	    searchdirs="$newlib_search_path $lib_search_path $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path"
+ 	  fi
+ 	  for searchdir in $searchdirs; do
+ 	    for search_ext in .la $std_shrext .so .a; do
+@@ -7377,7 +7377,7 @@
+ 		  libnameglob=$libname
+ 		fi
+ 		test yes = "$want_nocaseglob" && nocaseglob=`shopt -p nocaseglob`
+-		for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
++		for i in $lib_search_path; do
+ 		  if test yes = "$want_nocaseglob"; then
+ 		    shopt -s nocaseglob
+ 		    potential_libs=`ls $i/$libnameglob[.-]* 2>/dev/null`
+@@ -7455,7 +7455,7 @@
+ 	      fi
+ 	      if test -n "$a_deplib"; then
+ 		libname=`eval "\\$ECHO \"$libname_spec\""`
+-		for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
++		for i in $lib_search_path; do
+ 		  potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
+ 		  for potent_lib in $potential_libs; do
+ 		    potlib=$potent_lib # see symlink-check above in file_magic test
+diff -urN a/build-aux/ltmain.sh b/build-aux/ltmain.sh
+--- a/build-aux/ltmain.sh	2015-02-15 17:15:12.000000000 +0100
++++ b/build-aux/ltmain.sh	2016-01-17 14:00:31.841632168 +0100
+@@ -7628,9 +7628,9 @@
+ 	  func_stripname '-l' '' "$deplib"
+ 	  name=$func_stripname_result
+ 	  if test lib = "$linkmode"; then
+-	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs"
+ 	  else
+-	    searchdirs="$newlib_search_path $lib_search_path $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path"
+ 	  fi
+ 	  for searchdir in $searchdirs; do
+ 	    for search_ext in .la $std_shrext .so .a; do
+@@ -9289,7 +9289,7 @@
+ 		  libnameglob=$libname
+ 		fi
+ 		test yes = "$want_nocaseglob" && nocaseglob=`shopt -p nocaseglob`
+-		for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
++		for i in $lib_search_path; do
+ 		  if test yes = "$want_nocaseglob"; then
+ 		    shopt -s nocaseglob
+ 		    potential_libs=`ls $i/$libnameglob[.-]* 2>/dev/null`
+@@ -9367,7 +9367,7 @@
+ 	      fi
+ 	      if test -n "$a_deplib"; then
+ 		libname=`eval "\\$ECHO \"$libname_spec\""`
+-		for i in $lib_search_path $sys_lib_search_path $shlib_search_path; do
++		for i in $lib_search_path; do
+ 		  potential_libs=`ls $i/$libname[.-]* 2>/dev/null`
+ 		  for potent_lib in $potential_libs; do
+ 		    potlib=$potent_lib # see symlink-check above in file_magic test

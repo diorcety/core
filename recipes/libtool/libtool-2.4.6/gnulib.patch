@@ -1,0 +1,128 @@
+diff -urN a/bootstrap b/bootstrap
+--- a/bootstrap	2015-01-20 20:19:11.000000000 +0100
++++ b/bootstrap	2016-02-16 20:22:53.443561131 +0100
+@@ -2155,7 +2155,7 @@
+ test extract-trace = "$progname" && . `echo "$0" |${SED-sed} 's|[^/]*$||'`/options-parser
+ 
+ # Set a version string.
+-scriptversion=2015-01-20.17; # UTC
++scriptversion=2015-09-18.21; # UTC
+ 
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+diff -urN a/bootstrap.conf b/bootstrap.conf
+--- a/bootstrap.conf	2015-01-16 19:52:04.000000000 +0100
++++ b/bootstrap.conf	2016-02-16 20:22:53.443561131 +0100
+@@ -291,13 +291,8 @@
+ libtool_check_for_bogus_macros ()
+ {
+     $debug_cmd
+-
+-    $opt_dry_run ||
+-        for macro in LT_INIT AC_PROG_LIBTOOL AM_PROG_LIBTOOL; do
+-          if grep $macro aclocal.m4 libltdl/aclocal.m4; then
+-            func_fatal_error "Bogus $macro macro contents in an aclocal.m4 file"
+-          else :; fi
+-        done
++    $require_build_aux
++    sh $build_aux/no-bogus-m4-defines || exit 1
+ }
+ func_add_hook func_fini libtool_check_for_bogus_macros
+ 
+diff -urN a/build-aux/no-bogus-m4-defines b/build-aux/no-bogus-m4-defines
+--- a/build-aux/no-bogus-m4-defines	1970-01-01 01:00:00.000000000 +0100
++++ b/build-aux/no-bogus-m4-defines	2016-02-16 20:22:53.444561151 +0100
+@@ -0,0 +1,61 @@
++#! /bin/sh
++
++#   no-bogus-m4-defines - detect wrong m4 definitions
++#   -------------------------------------------------
++#   Try to catch the case where 'aclocal' pulls installed libtool
++#   macro file contents from another version of libtool into the
++#   current package 'aclocal.m4'.  Currently used by 'make dist'
++#   and by ./bootstrap (bootstrap.conf).
++#
++#   Copyright (C) 2015 Free Software Foundation, Inc.
++#
++#   This file is part of GNU Libtool.
++#
++# GNU Libtool is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# GNU Libtool is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with GNU Libtool; see the file COPYING.  If not, a copy
++# can be downloaded from  http://www.gnu.org/licenses/gpl.html,
++# or obtained by writing to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
++
++# Please report bugs or propose patches to bug-libtool@gnu.org.
++
++. `echo "$0" |${SED-sed} 's|[^/]*$||'`/funclib.sh
++# source this for "GNU m4" detection methods
++. `echo "$0" |${SED-sed} 's|[^/]*$||'`/extract-trace
++
++$require_gnu_m4
++
++bogus_macros='LT_INIT AC_PROG_LIBTOOL AM_PROG_LIBTOOL'
++
++bogus_macros_grep=''
++for macro in $bogus_macros; do
++  func_append bogus_macros_grep "/$macro/p;"
++done
++
++clean_false_alarms="pushdef(\`AC_BEFORE', \`')"
++
++bogus_macros_check_output=`$ECHO "$clean_false_alarms" \
++  |$M4 - aclocal.m4 libltdl/aclocal.m4 \
++  |$SED -n "$bogus_macros_grep"`
++
++exit_val=0
++for macro in $bogus_macros; do
++  case $bogus_macros_check_output in
++    *$macro*)
++      func_error "Bogus $macro macro definition in an aclocal.m4 file"
++      exit_val=1
++      ;;
++  esac
++done
++
++exit $exit_val
+diff -urN a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2015-01-20 16:34:33.000000000 +0100
++++ b/Makefile.am	2016-02-16 20:22:53.442561110 +0100
+@@ -86,11 +86,13 @@
+ libtool_m4	= $(srcdir)/$(macro_dir)/libtool.m4
+ ltversion_in	= $(srcdir)/$(macro_dir)/ltversion.in
+ ltversion_m4	= $(srcdir)/$(macro_dir)/ltversion.m4
++no_bogus_macros	= $(srcdir)/$(aux_dir)/no-bogus-m4-defines
+ options_parser	= $(srcdir)/$(aux_dir)/options-parser
+ 
+ EXTRA_DIST     += $(extract_trace) $(funclib_sh) $(inline_source) \
+ 		  $(libtoolize_in) $(ltmain_in) $(ltmain_sh) \
+-		  $(ltversion_in) $(ltversion_m4) $(options_parser)
++		  $(ltversion_in) $(ltversion_m4) $(no_bogus_macros) \
++		  $(options_parser)
+ 
+ ## These are the replacements that need to be made at bootstrap time,
+ ## because they must be static in distributed files, and not accidentally
+@@ -608,12 +610,7 @@
+ ## ...and similarly for .serial.
+ 	$(git_commit_count) > $(dotserial)
+ ## Ensure aclocal has not wrongly picked up old macro definitions.
+-	@for macro in LT_INIT AC_PROG_LIBTOOL AM_PROG_LIBTOOL; do \
+-	  if grep "$$macro" '$(srcdir)/aclocal.m4' '$(lt_aclocal_m4)'; then \
+-	    echo "Bogus $$macro macro contents in an aclocal.m4 file." >&2; \
+-	    exit 1; \
+-	  else :; fi; \
+-	done
++	$(no_bogus_macros)
+ 
+ distcheck-hook: syntax-check
+ 

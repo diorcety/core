@@ -1,0 +1,24 @@
+diff -urN a/build-aux/ltmain.in b/build-aux/ltmain.in
+--- a/build-aux/ltmain.in	2015-02-06 13:57:56.000000000 +0100
++++ b/build-aux/ltmain.in	2016-01-17 14:03:55.985929055 +0100
+@@ -4619,7 +4619,7 @@
+     new_inherited_linker_flags=
+ 
+     avoid_version=no
+-    bindir=
++    bindir=$libtool_bindir
+     dlfiles=
+     dlprefiles=
+     dlself=no
+diff -urN a/build-aux/ltmain.sh b/build-aux/ltmain.sh
+--- a/build-aux/ltmain.sh	2015-02-15 17:15:12.000000000 +0100
++++ b/build-aux/ltmain.sh	2016-01-17 14:03:46.237723639 +0100
+@@ -6531,7 +6531,7 @@
+     new_inherited_linker_flags=
+ 
+     avoid_version=no
+-    bindir=
++    bindir=$libtool_bindir
+     dlfiles=
+     dlprefiles=
+     dlself=no

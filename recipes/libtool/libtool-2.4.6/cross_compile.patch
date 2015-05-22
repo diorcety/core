@@ -1,0 +1,43 @@
+diff -urN a/build-aux/ltmain.in b/build-aux/ltmain.in
+--- a/build-aux/ltmain.in	2015-02-06 13:57:56.000000000 +0100
++++ b/build-aux/ltmain.in	2016-02-16 19:14:28.069268227 +0100
+@@ -6049,8 +6049,9 @@
+ 	    absdir=$abs_ladir
+ 	    libdir=$abs_ladir
+ 	  else
+-	    dir=$lt_sysroot$libdir
+-	    absdir=$lt_sysroot$libdir
++	    dir="$abs_ladir"
++	    absdir="$abs_ladir"
++	    libdir="$abs_ladir"
+ 	  fi
+ 	  test yes = "$hardcode_automatic" && avoidtemprpath=yes
+ 	else
+@@ -6448,8 +6449,6 @@
+ 		add=$libdir/$linklib
+ 	      fi
+ 	    else
+-	      # We cannot seem to hardcode it, guess we'll fake it.
+-	      add_dir=-L$libdir
+ 	      # Try looking first in the location we're being installed to.
+ 	      if test -n "$inst_prefix_dir"; then
+ 		case $libdir in
+@@ -6604,7 +6603,17 @@
+ 		  fi
+ 		  ;;
+ 		*)
+-		  path=-L$absdir/$objdir
++		  # OE sets installed=no in staging. We need to look in $objdir and $absdir,
++		  # preferring $objdir. RP 31/04/2008
++		  if test -f "$absdir/$objdir/$depdepl" ; then
++		    depdepl="$absdir/$objdir/$depdepl"
++		    path="-L$absdir/$objdir"
++		  elif test -f "$absdir/$depdepl" ; then
++		    depdepl="$absdir/$depdepl"
++		    path="-L$absdir"
++		  else
++		    path="-L$absdir/$objdir"
++		  fi
+ 		  ;;
+ 		esac
+ 		else

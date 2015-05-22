@@ -1,7 +1,17 @@
 LICENSE = "GPL-2.0+"
 LICENSE_${PN}-libltdl = "LGPL-2.1+"
 
-require libtool.inc
+require ${PN}-${PV}.inc
+
+inherit autotools-autoreconf
+
+RECIPE_TYPES = "machine cross sdk-cross"
+
+DEPENDS += "native:help2man native:makeinfo native:xz native:make"
+
+do_autoreconf () {
+  ./bootstrap --force
+}
 
 # Local Variables:
 # mode: python
