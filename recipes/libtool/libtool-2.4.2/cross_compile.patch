@@ -1,0 +1,43 @@
+diff -urN a/libltdl/config/ltmain.m4sh b/libltdl/config/ltmain.m4sh
+--- a/libltdl/config/ltmain.m4sh	2011-10-17 12:17:05.000000000 +0200
++++ b/libltdl/config/ltmain.m4sh	2013-10-22 17:50:24.921016169 +0200
+@@ -5731,8 +5731,9 @@
+ 	    absdir="$abs_ladir"
+ 	    libdir="$abs_ladir"
+ 	  else
+-	    dir="$lt_sysroot$libdir"
+-	    absdir="$lt_sysroot$libdir"
++	    dir="$abs_ladir"
++	    absdir="$abs_ladir"
++	    libdir="$abs_ladir"
+ 	  fi
+ 	  test "X$hardcode_automatic" = Xyes && avoidtemprpath=yes
+ 	else
+@@ -6130,8 +6131,6 @@
+ 		add="$libdir/$linklib"
+ 	      fi
+ 	    else
+-	      # We cannot seem to hardcode it, guess we'll fake it.
+-	      add_dir="-L$libdir"
+ 	      # Try looking first in the location we're being installed to.
+ 	      if test -n "$inst_prefix_dir"; then
+ 		case $libdir in
+@@ -6286,7 +6285,17 @@
+ 		  fi
+ 		  ;;
+ 		*)
+-		  path="-L$absdir/$objdir"
++                  # OE sets installed=no in staging. We need to look in $objdir and $absdir, 
++                  # preferring $objdir. RP 31/04/2008
++                  if test -f "$absdir/$objdir/$depdepl" ; then
++		    depdepl="$absdir/$objdir/$depdepl"
++		    path="-L$absdir/$objdir"
++                  elif test -f "$absdir/$depdepl" ; then
++		    depdepl="$absdir/$depdepl"
++		    path="-L$absdir"
++                  else
++		    path="-L$absdir/$objdir"
++                  fi
+ 		  ;;
+ 		esac
+ 		else

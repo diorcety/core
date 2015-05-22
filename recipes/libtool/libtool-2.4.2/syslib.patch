@@ -1,0 +1,30 @@
+diff -urN a/libltdl/config/ltmain.m4sh b/libltdl/config/ltmain.m4sh
+--- a/libltdl/config/ltmain.m4sh	2011-10-17 12:17:05.000000000 +0200
++++ b/libltdl/config/ltmain.m4sh	2014-04-02 23:19:35.179802667 +0200
+@@ -5397,9 +5397,9 @@
+ 	  func_stripname '-l' '' "$deplib"
+ 	  name=$func_stripname_result
+ 	  if test "$linkmode" = lib; then
+-	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs"
+ 	  else
+-	    searchdirs="$newlib_search_path $lib_search_path $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path"
+ 	  fi
+ 	  for searchdir in $searchdirs; do
+ 	    for search_ext in .la $std_shrext .so .a; do
+diff -urN a/libltdl/config/ltmain.sh b/libltdl/config/ltmain.sh
+--- a/libltdl/config/ltmain.sh	2011-10-17 12:19:35.000000000 +0200
++++ b/libltdl/config/ltmain.sh	2014-04-02 23:19:20.428198693 +0200
+@@ -6184,9 +6184,9 @@
+ 	  func_stripname '-l' '' "$deplib"
+ 	  name=$func_stripname_result
+ 	  if test "$linkmode" = lib; then
+-	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path $compiler_lib_search_dirs"
+ 	  else
+-	    searchdirs="$newlib_search_path $lib_search_path $sys_lib_search_path $shlib_search_path"
++	    searchdirs="$newlib_search_path $lib_search_path"
+ 	  fi
+ 	  for searchdir in $searchdirs; do
+ 	    for search_ext in .la $std_shrext .so .a; do

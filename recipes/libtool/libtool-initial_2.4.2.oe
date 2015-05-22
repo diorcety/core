@@ -1,0 +1,4 @@
+PN = "libtool"
+require ${PN}-${PV}.inc
+
+RECIPE_TYPES = "native"

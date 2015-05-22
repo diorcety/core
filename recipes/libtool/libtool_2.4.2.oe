@@ -1,19 +1,12 @@
-LICENSE = "GPL-2.0+"
-LICENSE_${PN}-libltdl = "LGPL-2.1+"
+require ${PN}-${PV}.inc
 
-require libtool.inc
+inherit autotools-autoreconf
 
-addtask bootstrap before configure after fetch unpack patch stage
-do_bootstrap[dirs] = "${S}"
+RECIPE_TYPES = "machine cross sdk-cross"
 
-do_bootstrap () {
-	if [ "${RECIPE_TYPE}" != "native" ]; then
-		./bootstrap
-	fi
+DEPENDS += "native:help2man"
+
+do_autoreconf () {
+  ./bootstrap
 }
 
-#SRC_URI:>TARGET_LIBC_mingw = " file://default-bindir.patch"
-
-# Local Variables:
-# mode: python
-# End:
